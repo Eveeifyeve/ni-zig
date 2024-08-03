@@ -2,6 +2,6 @@
 zig-out
 
 # nix 
-./result
+/result
 .direnv
 .devenv

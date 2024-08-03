@@ -24,6 +24,20 @@
           ...
         }:
         {
+          packages = rec {
+            BuildZigBin = pkgs.callPackage ./nix/zigBinBuilder.nix {};
+            nh = BuildZigBin {
+              name = "nh";
+              version = "0.0.1";
+              src = ./.;
+              meta = with lib; {
+                description = "A nh clone made in zig";
+                homepage = "https://github.com/eveeifyeve/nh-zig";
+                maintainers = [];
+                license = licenses.bsd3;
+              };
+            };
+          };
           devenv.shells.default = {
             dotenv.enable = false;
             packages = lib.optionals pkgs.stdenv.isDarwin (
