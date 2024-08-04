@@ -5,29 +5,39 @@ args@{
   src, 
   meta,
   buildFlags ? "",
+  checkFlags ? "",
   ...
 }:
 stdenv.mkDerivation (finalAttrs: {
   inherit name version src;
-  buildInputs = [ gcc zig ];
+  buildInputs = [ zig ];
 
   # Zig Cache Directory
-  # env = {
-  #   ZIG_CACHE_DIR = "$(mktmp -d)";
-  #   ZigBuildArgs = buildFlags;
-  # };
+  env = {
+    ZIG_GLOBAL_CACHE_DIR="$(mktemp -d)";
+    checkFlags = checkFlags;
+    buildFlags = buildFlags;
+  };
+
+  checkPhase = ''
+    runHook preCheck
+    zig test
+    runHook postCheck
+  '';
 
   buildPhase = ''
     zig build
-    ls -la
-    exit 1
   '';
 
-# installPhase = ''
-# cd $out
-# cp zig-out/bin/* $out/bin
-# rm -rf $out/root/
-# '';
+  installPhase = ''
+  runHook preInstall
+
+  mkdir -p $out
+  ls -la zig-out/bin
+  cp -r zig-out/bin $out/bin
+
+  runHook postInstall
+  '';
 
   inherit meta;
 })
