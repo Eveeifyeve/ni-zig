@@ -40,15 +40,12 @@
           };
           devenv.shells.default = {
             dotenv.enable = false;
-            packages = lib.optionals pkgs.stdenv.isDarwin (
-              with pkgs;
-              [
-                darwin.apple_sdk.frameworks.Security
-                darwin.apple_sdk.frameworks.SystemConfiguration
-              ]
-            );
             languages.zig = {
               enable = true;
+            };
+            languages.javascript = {
+              enable = true;
+              package = pkgs.nodejs-18_x;
             };
           };
         };
